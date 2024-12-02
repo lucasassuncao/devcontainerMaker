@@ -41,8 +41,14 @@ func main() {
 	clearScreen()
 
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Extensions..."))
-	selectedExtensions, _ := runInteractiveMultiselect(extensions)
-	dc.setExtensions(selectedExtensions)
+	//selectedExtensions, _ := runInteractiveMultiselect(extensions)
+	selectedExtensions := getMultiselectOptionsFromMap(extensions, runInteractiveMultiselect)
+
+	var se []string
+	for _, s := range selectedExtensions {
+		se = append(se, s)
+	}
+	dc.setExtensions(se)
 
 	clearScreen()
 
