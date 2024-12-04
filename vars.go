@@ -1,17 +1,21 @@
 package main
 
 var extensions = map[string]string{
-	"json":                       "zainchen.json",
-	"YAML":                       "redhat.vscode-yaml",
-	"Kubernetes":                 "ms-kubernetes-tools.vscode-kubernetes-tools",
-	"Docker":                     "ms-azuretools.vscode-docker",
-	"Terraform":                  "hashicorp.terraform",
-	"Go":                         "golang.go",
-	"GitLens — Git supercharged": "eamodio.gitlens",
-	"Gitlab Workflow":            "gitlab.gitlab-workflow",
-	"Dev Containers":             "ms-vscode-remote.remote-containers",
-	"PowerShell":                 "ms-vscode.PowerShell",
-	"Even Better TOML":           "tamasfe.even-better-toml",
+	"JSON":                          "zainchen.json",
+	"YAML":                          "redhat.vscode-yaml",
+	"Kubernetes":                    "ms-kubernetes-tools.vscode-kubernetes-tools",
+	"Docker":                        "ms-azuretools.vscode-docker",
+	"Terraform":                     "hashicorp.terraform",
+	"Go":                            "golang.go",
+	"GitLens":                       "eamodio.gitlens",
+	"GitLab Workflow":               "gitlab.gitlab-workflow",
+	"Dev Containers":                "ms-vscode-remote.remote-containers",
+	"PowerShell":                    "ms-vscode.PowerShell",
+	"Even Better TOML":              "tamasfe.even-better-toml",
+	"Markdown Preview Enhanced":     "shd101wyy.markdown-preview-enhanced",
+	"Syntax Highlight for Cucumber": "stevejpurves.cucumber",
+	"Makefile Tools":                "ms-vscode.makefile-tools",
+	"WSL":                           "ms-vscode-remote.remote-wsl",
 }
 
 var settings = map[string]interface{}{

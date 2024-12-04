@@ -6,33 +6,50 @@ import (
 )
 
 func main() {
-	dc := NewDevContainer()
+	dc := NewDevContainer().
+		WithName().
+		WithBuildDockerFile().
+		WithShutdownAction().
+		WithFeatures().
+		WithExtensions().
+		WithSettings()
 
-	dc.setName("TestDevContainer")
-	dc.setBuildDockerfile("Dockerfile")
-	dc.setShutdownAction("stopContainer")
+	devContainerName, err := pterm.DefaultInteractiveTextInput.WithDefaultText(pterm.FgGreen.Sprint("Enter your Dev Container name")).Show()
+
+	dc.SetName(devContainerName)
+	dc.SetBuildDockerfile("Dockerfile")
+	dc.SetShutdownAction("stopContainer")
 
 	// EXTENSIONS SECTION
-	clearScreen()
+	ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Extensions..."))
-	selectedExtensions := getMultiselectOptionsFromMap(extensions, runInteractiveMultiselect)
+	selectedExtensions := GetMultiselectOptionsFromMap(extensions, runInteractiveMultiselect)
 	var se []string
 	for _, s := range selectedExtensions {
 		se = append(se, s)
 	}
-	dc.setExtensions(se)
+	err = dc.SetExtensions(se)
+	if err != nil {
+		pterm.Fatal.Println(err.Error())
+	}
 
 	// SETTINGS SECTION
-	clearScreen()
+	ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Settings..."))
-	selectedSettings := getMultiselectOptionsFromMap(settings, runInteractiveMultiselect)
-	dc.setSettings(selectedSettings)
+	selectedSettings := GetMultiselectOptionsFromMap(settings, runInteractiveMultiselect)
+	err = dc.SetSettings(selectedSettings)
+	if err != nil {
+		pterm.Fatal.Println(err.Error())
+	}
 
 	// FEATURES SECTION
-	clearScreen()
+	ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's Features..."))
-	selectedFeatures := getMultiselectOptionsFromMap(features, runInteractiveMultiselect)
-	dc.setFeatures(selectedFeatures)
+	selectedFeatures := GetMultiselectOptionsFromMap(features, runInteractiveMultiselect)
+	err = dc.SetFeatures(selectedFeatures)
+	if err != nil {
+		pterm.Fatal.Println(err.Error())
+	}
 
 	d, err := PrettifyJson(dc)
 	if err != nil {
@@ -45,4 +62,6 @@ func main() {
 		_ = fmt.Errorf("failed to create devcontainer.json file %v", err.Error())
 	}
 
+	ClearScreen()
+	fmt.Println("Your Dev Container is ready c:")
 }

@@ -10,23 +10,6 @@ import (
 	"runtime"
 )
 
-func NewDevContainer() *DevContainer {
-	return &DevContainer{
-		Name: "",
-		Build: &Build{
-			Dockerfile: "",
-		},
-		ShutdownAction: "",
-		Features:       map[string]map[string]interface{}{},
-		Customizations: &Customizations{
-			VSCode: &VSCode{
-				Extensions: []string{},
-				Settings:   map[string]interface{}{},
-			},
-		},
-	}
-}
-
 func OutputJsonToFile(data []byte) error {
 	file, err := os.Create("devcontainer.json")
 	if err != nil {
@@ -81,19 +64,18 @@ func runInteractiveMultiselect(opts []string) ([]string, error) {
 	return printer.Show()
 }
 
-func runInteractiveMultiselectWithDefaultOptions(opts []string, std []string) ([]string, error) {
+/*func runInteractiveMultiselectWithDefaultOptions(opts []string) ([]string, error) {
 	printer := pterm.DefaultInteractiveMultiselect.
-		WithOptions(opts).
+		WithDefaultOptions(opts).
 		WithFilter(false).
 		WithKeyConfirm(keys.Enter).
 		WithKeySelect(keys.Space).
-		WithMaxHeight(len(opts)).
-		WithDefaultOptions(std)
+		WithMaxHeight(len(opts))
 
 	return printer.Show()
-}
+}*/
 
-func getMultiselectOptionsFromMap[T any](data map[string]T, runMultiselect func([]string) ([]string, error)) map[string]T {
+func GetMultiselectOptionsFromMap[T any](data map[string]T, runMultiselect func([]string) ([]string, error)) map[string]T {
 	var opts []string
 	for key := range data {
 		opts = append(opts, key)
@@ -110,7 +92,7 @@ func getMultiselectOptionsFromMap[T any](data map[string]T, runMultiselect func(
 	return selectedItems
 }
 
-func clearScreen() {
+func ClearScreen() {
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("cmd", "/c", "cls")
