@@ -5,6 +5,8 @@ import (
 	"github.com/pterm/pterm"
 )
 
+// RunInteractiveMultiselect creates and displays an interactive multiselect menu using the pterm library.
+// It allows the user to navigate through the provided options and select one or more items.
 func RunInteractiveMultiselect(opts []string) ([]string, error) {
 	printer := pterm.DefaultInteractiveMultiselect.
 		WithOptions(opts).
@@ -27,6 +29,7 @@ func RunInteractiveMultiselect(opts []string) ([]string, error) {
 	return printer.Show()
 }*/
 
+// GetMultiselectOptionsFromMap extracts the keys from the provided map[string]T and use them as options for selection using the runMultiselect function
 func GetMultiselectOptionsFromMap[T any](data map[string]T, runMultiselect func([]string) ([]string, error)) map[string]T {
 	var opts []string
 	for key := range data {

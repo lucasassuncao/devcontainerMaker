@@ -5,7 +5,8 @@ import (
 	"os"
 )
 
-func SaveToJSONFile(data []byte) error {
+// SaveDevContainerJSONFile creates a file named devcontainer.json and writes the provided JSON data to it
+func SaveDevContainerJSONFile(data []byte) error {
 	file, err := os.Create("devcontainer.json")
 	if err != nil {
 		return fmt.Errorf("error creating file %v", err.Error())
@@ -21,7 +22,8 @@ func SaveToJSONFile(data []byte) error {
 	return nil
 }
 
-func ReadJSONFile() ([]byte, error) {
+// ReadDevContainerJSONFile reads the contents of the devcontainer.json file and returns it as a byte slice
+func ReadDevContainerJSONFile() ([]byte, error) {
 	file, err := os.ReadFile("devcontainer.json")
 	if err != nil {
 		return nil, fmt.Errorf("error reading file %v", err.Error())

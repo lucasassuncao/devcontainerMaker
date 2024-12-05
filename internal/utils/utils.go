@@ -10,6 +10,8 @@ import (
 	"runtime"
 )
 
+// PrettifyDevContainerJSON takes a DevContainer struct
+// and converts it into a prettified (indented) JSON format using json.MarshalIndent
 func PrettifyDevContainerJSON(dc *model.DevContainer) ([]byte, error) {
 	if dc.Name == "" {
 		return nil, errors.New("error prettifying json, field 'name' is empty")
@@ -23,6 +25,7 @@ func PrettifyDevContainerJSON(dc *model.DevContainer) ([]byte, error) {
 	return d, nil
 }
 
+// JSONToStruct unmarshals a given JSON byte slice into a DevContainer struct
 func JSONToStruct(content []byte, dc *model.DevContainer) error {
 	err := json.Unmarshal(content, &dc)
 	if err != nil {
@@ -32,6 +35,7 @@ func JSONToStruct(content []byte, dc *model.DevContainer) error {
 	return nil
 }
 
+// ClearScreen clears the terminal screen based on the operating system
 func ClearScreen() {
 	var cmd *exec.Cmd
 	if runtime.GOOS == "windows" {

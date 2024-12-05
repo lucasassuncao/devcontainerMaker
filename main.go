@@ -63,7 +63,7 @@ func main() {
 		return
 	}
 
-	err = repository.SaveToJSONFile(d)
+	err = repository.SaveDevContainerJSONFile(d)
 	if err != nil {
 		_ = fmt.Errorf("failed to create devcontainer.json file %v", err.Error())
 	}
