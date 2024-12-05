@@ -1,12 +1,18 @@
 package main
 
 import (
+	"devcontainerMaker/internal/config"
+	"devcontainerMaker/internal/model"
+	"devcontainerMaker/internal/repository"
+	"devcontainerMaker/internal/service"
+	"devcontainerMaker/internal/utils"
 	"fmt"
+
 	"github.com/pterm/pterm"
 )
 
 func main() {
-	dc := NewDevContainer().
+	dc := model.NewDevContainer().
 		WithName().
 		WithBuildDockerFile().
 		WithShutdownAction().
@@ -21,9 +27,9 @@ func main() {
 	dc.SetShutdownAction("stopContainer")
 
 	// EXTENSIONS SECTION
-	ClearScreen()
+	utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Extensions..."))
-	selectedExtensions := GetMultiselectOptionsFromMap(extensions, runInteractiveMultiselect)
+	selectedExtensions := service.GetMultiselectOptionsFromMap(config.Extensions, service.RunInteractiveMultiselect)
 	var se []string
 	for _, s := range selectedExtensions {
 		se = append(se, s)
@@ -34,34 +40,34 @@ func main() {
 	}
 
 	// SETTINGS SECTION
-	ClearScreen()
+	utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Settings..."))
-	selectedSettings := GetMultiselectOptionsFromMap(settings, runInteractiveMultiselect)
+	selectedSettings := service.GetMultiselectOptionsFromMap(config.Settings, service.RunInteractiveMultiselect)
 	err = dc.SetSettings(selectedSettings)
 	if err != nil {
 		pterm.Fatal.Println(err.Error())
 	}
 
 	// FEATURES SECTION
-	ClearScreen()
+	utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's Features..."))
-	selectedFeatures := GetMultiselectOptionsFromMap(features, runInteractiveMultiselect)
+	selectedFeatures := service.GetMultiselectOptionsFromMap(config.Features, service.RunInteractiveMultiselect)
 	err = dc.SetFeatures(selectedFeatures)
 	if err != nil {
 		pterm.Fatal.Println(err.Error())
 	}
 
-	d, err := PrettifyJson(dc)
+	d, err := utils.PrettifyJSON(dc)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	err = OutputJsonToFile(d)
+	err = repository.SaveToJSONFile(d)
 	if err != nil {
 		_ = fmt.Errorf("failed to create devcontainer.json file %v", err.Error())
 	}
 
-	ClearScreen()
+	utils.ClearScreen()
 	fmt.Println("Your Dev Container is ready c:")
 }
