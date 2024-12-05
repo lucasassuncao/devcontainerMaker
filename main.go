@@ -20,7 +20,7 @@ func main() {
 		WithExtensions().
 		WithSettings()
 
-	devContainerName, err := pterm.DefaultInteractiveTextInput.WithDefaultText(pterm.FgGreen.Sprint("Enter your Dev Container name")).Show()
+	devContainerName, _ := pterm.DefaultInteractiveTextInput.WithDefaultText(pterm.FgGreen.Sprint("Enter your Dev Container name")).Show()
 
 	dc.SetName(devContainerName)
 	dc.SetBuildDockerfile("Dockerfile")
@@ -34,7 +34,7 @@ func main() {
 	for _, s := range selectedExtensions {
 		se = append(se, s)
 	}
-	err = dc.SetExtensions(se)
+	err := dc.SetExtensions(se)
 	if err != nil {
 		pterm.Fatal.Println(err.Error())
 	}

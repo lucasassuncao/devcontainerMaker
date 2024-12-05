@@ -1,0 +1,16 @@
+linters:
+  enable:
+    - errcheck # Check for unchecked errors
+    - govet # Go vet
+    - staticcheck # Advanced static analysis
+    - gosimple # Simplify code
+
+run:
+  tests: false # Include tests
+  timeout: 2m # Set timeout
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck # Ignore errcheck in test files
