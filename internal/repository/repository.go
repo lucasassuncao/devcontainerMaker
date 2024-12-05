@@ -16,7 +16,6 @@ func SaveToJSONFile(data []byte) error {
 	_, err = file.Write(data)
 	if err != nil {
 		return fmt.Errorf("error writing to file %v", err.Error())
-
 	}
 
 	return nil

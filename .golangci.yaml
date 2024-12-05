@@ -1,16 +1,35 @@
 linters:
+  disable-all: false
   enable:
+    - gofmt
+    - whitespace
+    - dupl
+    - gocognit
+    - unparam
+    - gocyclo
+    - gocritic
+    - nakedret
+    - asciicheck
+    - dogsled
+    - misspell
+    - nestif
+    - nolintlint
+    - stylecheck
     - errcheck # Check for unchecked errors
+    - lll
     - govet # Go vet
-    - staticcheck # Advanced static analysis
     - gosimple # Simplify code
+    - staticcheck # Advanced static analysis
 
 run:
-  tests: false # Include tests
-  timeout: 2m # Set timeout
+  timeout: 15m # Set timeout
 
-issues:
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - errcheck # Ignore errcheck in test files
+linters-settings:
+  lll:
+    line-length: 240
+  gci:
+    sections:
+      - standard
+      - default
+      - blank
+    skip-generated: true
