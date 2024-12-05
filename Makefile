@@ -9,7 +9,7 @@ install:
 	go build
 
 test:
-	go test
+	go test -v ./...
 
 docs:
 	go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
