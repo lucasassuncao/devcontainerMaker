@@ -12,11 +12,11 @@ import "devcontainerMaker/internal/utils"
 
 - [func ClearScreen\(\)](<#ClearScreen>)
 - [func JSONToStruct\(content \[\]byte, dc \*model.DevContainer\) error](<#JSONToStruct>)
-- [func PrettifyJSON\(dc \*model.DevContainer\) \(\[\]byte, error\)](<#PrettifyJSON>)
+- [func PrettifyDevContainerJSON\(dc \*model.DevContainer\) \(\[\]byte, error\)](<#PrettifyDevContainerJSON>)
 
 
 <a name="ClearScreen"></a>
-## func [ClearScreen](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/utils/utils.go#L29>)
+## func [ClearScreen](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/utils/utils.go#L35>)
 
 ```go
 func ClearScreen()
@@ -25,7 +25,7 @@ func ClearScreen()
 
 
 <a name="JSONToStruct"></a>
-## func [JSONToStruct](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/utils/utils.go#L20>)
+## func [JSONToStruct](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/utils/utils.go#L26>)
 
 ```go
 func JSONToStruct(content []byte, dc *model.DevContainer) error
@@ -33,11 +33,11 @@ func JSONToStruct(content []byte, dc *model.DevContainer) error
 
 
 
-<a name="PrettifyJSON"></a>
-## func [PrettifyJSON](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/utils/utils.go#L12>)
+<a name="PrettifyDevContainerJSON"></a>
+## func [PrettifyDevContainerJSON](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/utils/utils.go#L13>)
 
 ```go
-func PrettifyJSON(dc *model.DevContainer) ([]byte, error)
+func PrettifyDevContainerJSON(dc *model.DevContainer) ([]byte, error)
 ```
 
 

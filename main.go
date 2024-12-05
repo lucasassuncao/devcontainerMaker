@@ -57,7 +57,7 @@ func main() {
 		pterm.Fatal.Println(err.Error())
 	}
 
-	d, err := utils.PrettifyJSON(dc)
+	d, err := utils.PrettifyDevContainerJSON(dc)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

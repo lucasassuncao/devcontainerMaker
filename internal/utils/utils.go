@@ -3,17 +3,23 @@ package utils
 import (
 	"devcontainerMaker/internal/model"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
 )
 
-func PrettifyJSON(dc *model.DevContainer) ([]byte, error) {
+func PrettifyDevContainerJSON(dc *model.DevContainer) ([]byte, error) {
+	if dc.Name == "" {
+		return nil, errors.New("error prettifying json, field 'name' is empty")
+	}
+
 	d, err := json.MarshalIndent(dc, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("error prettifying json %v", err.Error())
 	}
+
 	return d, nil
 }
 
