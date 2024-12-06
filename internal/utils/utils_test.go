@@ -5,35 +5,35 @@ import (
 	"testing"
 )
 
-/*func TestPrettifyJSON(t *testing.T) {
+// TestPrettifyDevContainerJSON tests the functionality of PrettifyDevContainerJSON.
+func TestPrettifyDevContainerJSON(t *testing.T) {
+	// Success Test: Valid DevContainer
 	t.Run("Success to Prettify JSON", func(t *testing.T) {
-		dc := model.NewDevContainer().
-			withName().
-			WithBuild().
-			WithShutdownAction()
+		dc, _ := model.NewDevContainer().Initialize("dockerfile")
 
-		dc.SetName()
-		dc.SetBuild()
-		dc.SetShutdownAction()
+		dc.SetName("TestDevContainer")
+		dc.SetBuildDockerfile("Dockerfile")
+		dc.SetBuildContext(".")
+		dc.SetShutdownAction("none")
 
 		_, err := PrettifyDevContainerJSON(dc)
 		if err != nil {
-			t.Errorf("PrettifyDevContainerJSON failed with error: %v", err.Error())
+			t.Errorf("Expected success but got error: %v", err.Error())
 		}
 	})
 
+	// Failure Test: Missing Required Fields
 	t.Run("Fail to Prettify JSON", func(t *testing.T) {
-		dc := model.NewDevContainer().
-			withName().
-			WithBuild().
-			WithShutdownAction()
+		dc, _ := model.NewDevContainer().Initialize("dockerfile")
+
+		// Intentionally not setting required fields
 
 		_, err := PrettifyDevContainerJSON(dc)
 		if err == nil {
-			t.Error("Expected PrettifyDevContainerJSON to fail, but it succeeded")
+			t.Error("Expected error but got success")
 		}
 	})
-}*/
+}
 
 func TestJSONToStruct(t *testing.T) {
 	type args struct {

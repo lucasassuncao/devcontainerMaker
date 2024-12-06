@@ -3,6 +3,7 @@ package model
 import (
 	"devcontainerMaker/internal/service"
 	"fmt"
+	"strings"
 )
 
 // DevContainer struct represents a configuration for a development container,
@@ -46,6 +47,7 @@ func NewDevContainer() *DevContainer {
 	return &DevContainer{}
 }
 
+// Initialize -
 func (d *DevContainer) Initialize(typ string) (*DevContainer, error) {
 	var opts = []string{"image", "dockerfile", "dockercompose"}
 
@@ -57,7 +59,7 @@ func (d *DevContainer) Initialize(typ string) (*DevContainer, error) {
 			return nil, fmt.Errorf("error during initialization: %w", err)
 		}
 	}
-	d.Type = typ
+	d.Type = strings.TrimSpace(strings.ToLower(typ))
 
 	if err := validateOptions(d.Type, opts); err != nil {
 		return nil, fmt.Errorf("error: %w", err)
@@ -140,11 +142,11 @@ func (d *DevContainer) SetName(name string) error {
 		if err != nil {
 			return fmt.Errorf("could not set DevContainer name: %v", err)
 		}
-		d.Name = name
+		d.Name = strings.TrimSpace(name)
 		return nil
 	}
 
-	d.Name = name
+	d.Name = strings.TrimSpace(name)
 	return nil
 }
 func (d *DevContainer) SetImage(image string) error {

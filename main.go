@@ -15,7 +15,7 @@ import (
 var v = validator.New()
 
 func main() {
-	dc, err := model.NewDevContainer().Initialize("")
+	dc, err := model.NewDevContainer().Initialize("dockerfile")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -97,12 +97,14 @@ func main() {
 		return
 	}
 
+	fmt.Println("Prettifying JSON...")
 	d, err := utils.PrettifyDevContainerJSON(dc)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
+	fmt.Println("Generating devcontainer.json file...")
 	err = repository.SaveDevContainerJSONFile(d)
 	if err != nil {
 		_ = fmt.Errorf("failed to create devcontainer.json file %v", err.Error())

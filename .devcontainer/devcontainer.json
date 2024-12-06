@@ -1,30 +1,28 @@
-// Sharing Git Credentials: https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials
-// Available Dev Container Features: https://containers.dev/features
-//
 {
-  "name": "Ubuntu Dev Container",
+  "name": "DevContainerMaker",
   "build": {
     "dockerfile": "Dockerfile",
+    "context": "."
   },
   "shutdownAction": "stopContainer",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "false",
-      "username": "none",
-      "userUid": "automatic",
+      "upgradePackages": "false",
       "userGid": "automatic",
-      "upgradePackages": "false"
-    },
-    "ghcr.io/devcontainers/features/powershell:1": {
-      "version": "latest"
+      "userUid": "automatic",
+      "username": "none"
     },
     "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": "true"
+      "ppa": "true",
+      "version": "latest"
     },
     "ghcr.io/devcontainers/features/go:1": {
       "golangciLintVersion": "latest",
       "version": "1.23.3"
+    },
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "version": "latest"
     },
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2.1.0": {
       "jqVersion": "latest",
@@ -34,39 +32,42 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "eamodio.gitlens",
-        "gitlab.gitlab-workflow",
         "golang.go",
+        "eamodio.gitlens",
         "ms-vscode.PowerShell",
-        "redhat.vscode-yaml",
         "tamasfe.even-better-toml",
-        "zainchen.json"
+        "zainchen.json",
+        "shd101wyy.markdown-preview-enhanced",
+        "gitlab.gitlab-workflow",
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools"
       ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "go.inlayHints.functionTypeParameters": true,
-        "go.inlayHints.parameterNames": true,
-        "go.inlayHints.rangeVariableTypes": true,
+        "editor.formatOnSave": true,
+        "files.autoSave": "afterDelay",
+        "go.enableCodeLens": {
+          "runtest": true
+        },
         "go.inlayHints.assignVariableTypes": true,
         "go.inlayHints.compositeLiteralFields": true,
         "go.inlayHints.compositeLiteralTypes": true,
         "go.inlayHints.constantValues": true,
-        "go.toolsManagement.checkForUpdates": "off",
-        "go.useLanguageServer": true,
-        "editor.formatOnSave": true,
-        "go.lintTool": "golangci-lint",
+        "go.inlayHints.functionTypeParameters": true,
+        "go.inlayHints.parameterNames": true,
+        "go.inlayHints.rangeVariableTypes": true,
         "go.lintFlags": [
           "--fast"
         ],
         "go.lintOnSave": "file",
+        "go.lintTool": "golangci-lint",
+        "go.toolsManagement.checkForUpdates": "off",
+        "go.useLanguageServer": true,
         "goTestExplorer.profiler.showCodeLens": true,
-        "go.enableCodeLens": {
-          "runtest": true
-        },
         "gopls": {
           "build.buildFlags": [],
           "ui.diagnostic.staticcheck": true
-        }
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   }
