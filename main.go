@@ -89,6 +89,7 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
+	// Validate struct to check fields
 	err = v.Struct(dc)
 	if err != nil {
 		pterm.Error.Print(err.Error())

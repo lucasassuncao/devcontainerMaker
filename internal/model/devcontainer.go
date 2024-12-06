@@ -6,36 +6,36 @@ import (
 )
 
 // DevContainer struct represents a configuration for a development container,
-// which can include build settings, shutdown actions, feature configurations, and customizations.
+// which can include Build settings, shutdown actions, feature configurations, and Customizations.
 // Some fields are optional and will be omitted from the JSON representation if not set, allowing flexibility in the configuration
 type DevContainer struct {
 	Name              string                            `json:"name" validate:"required"`
 	Type              string                            `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
 	Image             string                            `json:"image,omitempty"`
-	Build             *build                            `json:"build,omitempty"`
+	Build             *Build                            `json:"Build,omitempty"`
 	DockerComposeFile string                            `json:"dockerComposeFile,omitempty"`
 	Service           string                            `json:"service,omitempty"`
 	ShutdownAction    string                            `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
 	Features          map[string]map[string]interface{} `json:"features,omitempty"`
-	Customizations    *customizations                   `json:"customizations,omitempty"`
+	Customizations    *Customizations                   `json:"Customizations,omitempty"`
 }
 
-// build struct encapsulates the build-related configuration for a development container,
+// Build struct encapsulates the Build-related configuration for a development container,
 // allowing the user to define the specifics of how the container should be built. This field is optional
-type build struct {
+type Build struct {
 	Dockerfile string `json:"dockerfile"`
 	Context    string `json:"context"`
 }
 
-// customizations struct allows users to define container-specific customizations, such as vscode settings or extensions.
-// It currently supports vscode-related configurations, but additional customizations could be added in the future.
-type customizations struct {
-	VSCode *vscode `json:"vscode,omitempty"`
+// Customizations struct allows users to define container-specific Customizations, such as VSCode settings or extensions.
+// It currently supports VSCode-related configurations, but additional Customizations could be added in the future.
+type Customizations struct {
+	VSCode *VSCode `json:"VSCode,omitempty"`
 }
 
-// vscode struct provides configuration options for Visual Studio Code inside the development container.
+// VSCode struct provides configuration options for Visual Studio Code inside the development container.
 // It includes settings for extensions to be installed and custom settings to be applied. These fields are optional
-type vscode struct {
+type VSCode struct {
 	Extensions []string               `json:"extensions,omitempty"`
 	Settings   map[string]interface{} `json:"settings,omitempty"`
 }
@@ -95,7 +95,7 @@ func (d *DevContainer) withImage() *DevContainer {
 	return d
 }
 func (d *DevContainer) withBuild() *DevContainer {
-	d.Build = &build{
+	d.Build = &Build{
 		Dockerfile: "",
 		Context:    "",
 	}
@@ -118,16 +118,16 @@ func (d *DevContainer) withFeatures() *DevContainer {
 	return d
 }
 func (d *DevContainer) withExtensions() *DevContainer {
-	d.Customizations = &customizations{
-		VSCode: &vscode{
+	d.Customizations = &Customizations{
+		VSCode: &VSCode{
 			Extensions: make([]string, 0),
 		},
 	}
 	return d
 }
 func (d *DevContainer) withSettings() *DevContainer {
-	d.Customizations = &customizations{
-		VSCode: &vscode{
+	d.Customizations = &Customizations{
+		VSCode: &VSCode{
 			Settings: make(map[string]interface{}),
 		},
 	}
@@ -187,7 +187,7 @@ func (d *DevContainer) SetBuildContext(path string) error {
 	}
 
 	if path == "" {
-		path, err := service.RunInteractiveTextInput("Enter the path where the Docker build should be executed from (default is the current directory)", ".")
+		path, err := service.RunInteractiveTextInput("Enter the path where the Docker Build should be executed from (default is the current directory)", ".")
 		if err != nil {
 			return fmt.Errorf("could not set DevContainer Build Context: %v", err)
 		}
