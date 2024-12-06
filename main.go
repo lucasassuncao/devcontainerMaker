@@ -7,6 +7,7 @@ import (
 	"devcontainerMaker/internal/service"
 	"devcontainerMaker/internal/utils"
 	"fmt"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/pterm/pterm"
 )
@@ -61,7 +62,7 @@ func main() {
 	// EXTENSIONS SECTION
 	//utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Extensions..."))
-	selectedExtensions := service.GetMultiselectOptionsFromMap(config.Extensions, service.RunInteractiveMultiselect)
+	selectedExtensions := service.GetMultiselectOptionsFromMap(config.DefaultExtensions, service.RunInteractiveMultiselect)
 	var se []string
 	for _, s := range selectedExtensions {
 		se = append(se, s)
@@ -73,8 +74,8 @@ func main() {
 
 	// SETTINGS SECTION
 	//utils.ClearScreen()
-	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Settings..."))
-	selectedSettings := service.GetMultiselectOptionsFromMap(config.Settings, service.RunInteractiveMultiselect)
+	pterm.DefaultBasicText.Println(pterm.LightBlue())
+	selectedSettings := service.GetMultiselectOptionsFromMap(config.DefaultSettings, service.RunInteractiveMultiselect)
 	err = dc.SetSettings(selectedSettings)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -83,7 +84,7 @@ func main() {
 	// FEATURES SECTION
 	//utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's Features..."))
-	selectedFeatures := service.GetMultiselectOptionsFromMap(config.Features, service.RunInteractiveMultiselect)
+	selectedFeatures := service.GetMultiselectOptionsFromMap(config.DefaultFeatures, service.RunInteractiveMultiselect)
 	err = dc.SetFeatures(selectedFeatures)
 	if err != nil {
 		fmt.Println(err.Error())

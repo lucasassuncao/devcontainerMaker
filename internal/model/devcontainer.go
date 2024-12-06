@@ -9,15 +9,15 @@ import (
 // which can include Build settings, shutdown actions, feature configurations, and Customizations.
 // Some fields are optional and will be omitted from the JSON representation if not set, allowing flexibility in the configuration
 type DevContainer struct {
-	Name              string                            `json:"name" validate:"required"`
-	Type              string                            `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
-	Image             string                            `json:"image,omitempty"`
-	Build             *Build                            `json:"build,omitempty"`
-	DockerComposeFile string                            `json:"dockerComposeFile,omitempty"`
-	Service           string                            `json:"service,omitempty"`
-	ShutdownAction    string                            `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
-	Features          map[string]map[string]interface{} `json:"features,omitempty"`
-	Customizations    *Customizations                   `json:"customizations,omitempty"`
+	Name              string                 `json:"name" validate:"required"`
+	Type              string                 `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
+	Image             string                 `json:"image,omitempty"`
+	Build             *Build                 `json:"build,omitempty"`
+	DockerComposeFile string                 `json:"dockerComposeFile,omitempty"`
+	Service           string                 `json:"service,omitempty"`
+	ShutdownAction    string                 `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
+	Features          map[string]interface{} `json:"features,omitempty"`
+	Customizations    *Customizations        `json:"customizations,omitempty"`
 }
 
 // Build struct encapsulates the Build-related configuration for a development container,
@@ -114,7 +114,7 @@ func (d *DevContainer) withShutdownAction() *DevContainer {
 	return d
 }
 func (d *DevContainer) withFeatures() *DevContainer {
-	d.Features = make(map[string]map[string]interface{})
+	d.Features = make(map[string]interface{})
 	return d
 }
 func (d *DevContainer) withExtensions() *DevContainer {
@@ -259,7 +259,7 @@ func (d *DevContainer) SetShutdownAction(action string) error {
 	return nil
 }
 
-func (d *DevContainer) SetFeatures(features map[string]map[string]interface{}) error {
+func (d *DevContainer) SetFeatures(features map[string]interface{}) error {
 	if len(features) == 0 {
 		return fmt.Errorf("no features selected... skipping feature set")
 	}
@@ -295,7 +295,7 @@ func (d *DevContainer) SetSettings(settings map[string]interface{}) error {
 
 func (d *DevContainer) AddFeature(key string, value map[string]interface{}) {
 	if d.Features == nil {
-		d.Features = make(map[string]map[string]interface{})
+		d.Features = make(map[string]interface{})
 	}
 
 	d.Features[key] = value

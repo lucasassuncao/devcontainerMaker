@@ -11,13 +11,14 @@ import "devcontainerMaker/internal/service"
 ## Index
 
 - [func GetMultiselectOptionsFromMap\[T any\]\(data map\[string\]T, runMultiselect func\(\[\]string\) \(\[\]string, error\)\) map\[string\]T](<#GetMultiselectOptionsFromMap>)
+- [func RunBasicText\(text string\)](<#RunBasicText>)
 - [func RunInteractiveMultiselect\(opts \[\]string\) \(\[\]string, error\)](<#RunInteractiveMultiselect>)
 - [func RunInteractiveSelect\(opts \[\]string, text string\) \(string, error\)](<#RunInteractiveSelect>)
 - [func RunInteractiveTextInput\(text, defaultValue string\) \(string, error\)](<#RunInteractiveTextInput>)
 
 
 <a name="GetMultiselectOptionsFromMap"></a>
-## func [GetMultiselectOptionsFromMap](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L50>)
+## func [GetMultiselectOptionsFromMap](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L54>)
 
 ```go
 func GetMultiselectOptionsFromMap[T any](data map[string]T, runMultiselect func([]string) ([]string, error)) map[string]T
@@ -25,8 +26,17 @@ func GetMultiselectOptionsFromMap[T any](data map[string]T, runMultiselect func(
 
 GetMultiselectOptionsFromMap extracts the keys from the provided map\[string\]T and use them as options for selection using the runMultiselect function
 
+<a name="RunBasicText"></a>
+## func [RunBasicText](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L8>)
+
+```go
+func RunBasicText(text string)
+```
+
+
+
 <a name="RunInteractiveMultiselect"></a>
-## func [RunInteractiveMultiselect](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L27>)
+## func [RunInteractiveMultiselect](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L31>)
 
 ```go
 func RunInteractiveMultiselect(opts []string) ([]string, error)
@@ -35,7 +45,7 @@ func RunInteractiveMultiselect(opts []string) ([]string, error)
 RunInteractiveMultiselect creates and displays an interactive multiselect menu using the pterm library. It allows the user to navigate through the provided options and select one or more items.
 
 <a name="RunInteractiveSelect"></a>
-## func [RunInteractiveSelect](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L16>)
+## func [RunInteractiveSelect](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L20>)
 
 ```go
 func RunInteractiveSelect(opts []string, text string) (string, error)
@@ -44,7 +54,7 @@ func RunInteractiveSelect(opts []string, text string) (string, error)
 
 
 <a name="RunInteractiveTextInput"></a>
-## func [RunInteractiveTextInput](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L8>)
+## func [RunInteractiveTextInput](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/service/service.go#L12>)
 
 ```go
 func RunInteractiveTextInput(text, defaultValue string) (string, error)

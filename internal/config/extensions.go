@@ -1,6 +1,6 @@
 package config
 
-var Extensions = map[string]string{
+var DefaultExtensions = map[string]string{
 	"JSON":                          "zainchen.json",
 	"YAML":                          "redhat.vscode-yaml",
 	"Kubernetes":                    "ms-kubernetes-tools.vscode-kubernetes-tools",

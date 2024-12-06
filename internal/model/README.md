@@ -10,45 +10,71 @@ import "devcontainerMaker/internal/model"
 
 ## Index
 
+- [type Build](<#Build>)
+- [type Customizations](<#Customizations>)
 - [type DevContainer](<#DevContainer>)
   - [func NewDevContainer\(\) \*DevContainer](<#NewDevContainer>)
   - [func \(d \*DevContainer\) AddExtension\(extension string\)](<#DevContainer.AddExtension>)
   - [func \(d \*DevContainer\) AddFeature\(key string, value map\[string\]interface\{\}\)](<#DevContainer.AddFeature>)
   - [func \(d \*DevContainer\) AddSetting\(key string, value interface\{\}\)](<#DevContainer.AddSetting>)
-  - [func \(d \*DevContainer\) Initialize\(\) \*DevContainer](<#DevContainer.Initialize>)
-  - [func \(d \*DevContainer\) SetBuild\(\)](<#DevContainer.SetBuild>)
-  - [func \(d \*DevContainer\) SetDockerComposeFile\(\)](<#DevContainer.SetDockerComposeFile>)
+  - [func \(d \*DevContainer\) Initialize\(typ string\) \(\*DevContainer, error\)](<#DevContainer.Initialize>)
+  - [func \(d \*DevContainer\) SetBuildContext\(path string\) error](<#DevContainer.SetBuildContext>)
+  - [func \(d \*DevContainer\) SetBuildDockerfile\(file string\) error](<#DevContainer.SetBuildDockerfile>)
+  - [func \(d \*DevContainer\) SetDockerComposeFile\(file string\) error](<#DevContainer.SetDockerComposeFile>)
   - [func \(d \*DevContainer\) SetExtensions\(extensions \[\]string\) error](<#DevContainer.SetExtensions>)
-  - [func \(d \*DevContainer\) SetFeatures\(features map\[string\]map\[string\]interface\{\}\) error](<#DevContainer.SetFeatures>)
-  - [func \(d \*DevContainer\) SetImage\(\)](<#DevContainer.SetImage>)
-  - [func \(d \*DevContainer\) SetName\(\)](<#DevContainer.SetName>)
-  - [func \(d \*DevContainer\) SetService\(\)](<#DevContainer.SetService>)
+  - [func \(d \*DevContainer\) SetFeatures\(features map\[string\]interface\{\}\) error](<#DevContainer.SetFeatures>)
+  - [func \(d \*DevContainer\) SetImage\(image string\) error](<#DevContainer.SetImage>)
+  - [func \(d \*DevContainer\) SetName\(name string\) error](<#DevContainer.SetName>)
+  - [func \(d \*DevContainer\) SetService\(svcName string\) error](<#DevContainer.SetService>)
   - [func \(d \*DevContainer\) SetSettings\(settings map\[string\]interface\{\}\) error](<#DevContainer.SetSettings>)
-  - [func \(d \*DevContainer\) SetShutdownAction\(\)](<#DevContainer.SetShutdownAction>)
-  - [func \(d \*DevContainer\) SetType\(\)](<#DevContainer.SetType>)
+  - [func \(d \*DevContainer\) SetShutdownAction\(action string\) error](<#DevContainer.SetShutdownAction>)
+- [type VSCode](<#VSCode>)
 
+
+<a name="Build"></a>
+## type [Build](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L25-L28>)
+
+Build struct encapsulates the Build\-related configuration for a development container, allowing the user to define the specifics of how the container should be built. This field is optional
+
+```go
+type Build struct {
+    Dockerfile string `json:"dockerfile"`
+    Context    string `json:"context"`
+}
+```
+
+<a name="Customizations"></a>
+## type [Customizations](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L32-L34>)
+
+Customizations struct allows users to define container\-specific Customizations, such as VSCode settings or extensions. It currently supports VSCode\-related configurations, but additional Customizations could be added in the future.
+
+```go
+type Customizations struct {
+    VSCode *VSCode `json:"vscode,omitempty"`
+}
+```
 
 <a name="DevContainer"></a>
-## type [DevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L12-L22>)
+## type [DevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L11-L21>)
 
-DevContainer struct represents a configuration for a development container, which can include build settings, shutdown actions, feature configurations, and customizations. Some fields are optional and will be omitted from the JSON representation if not set, allowing flexibility in the configuration
+DevContainer struct represents a configuration for a development container, which can include Build settings, shutdown actions, feature configurations, and Customizations. Some fields are optional and will be omitted from the JSON representation if not set, allowing flexibility in the configuration
 
 ```go
 type DevContainer struct {
-    Name              string                            `json:"name" validate:"required"`
-    Type              string                            `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
-    Image             string                            `json:"image,omitempty"`
-    Build             *build                            `json:"build,omitempty"`
-    DockerComposeFile string                            `json:"dockerComposeFile,omitempty"`
-    Service           string                            `json:"service,omitempty"`
-    ShutdownAction    string                            `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
-    Features          map[string]map[string]interface{} `json:"features,omitempty"`
-    Customizations    *customizations                   `json:"customizations,omitempty"`
+    Name              string                 `json:"name" validate:"required"`
+    Type              string                 `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
+    Image             string                 `json:"image,omitempty"`
+    Build             *Build                 `json:"build,omitempty"`
+    DockerComposeFile string                 `json:"dockerComposeFile,omitempty"`
+    Service           string                 `json:"service,omitempty"`
+    ShutdownAction    string                 `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
+    Features          map[string]interface{} `json:"features,omitempty"`
+    Customizations    *Customizations        `json:"customizations,omitempty"`
 }
 ```
 
 <a name="NewDevContainer"></a>
-### func [NewDevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L46>)
+### func [NewDevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L45>)
 
 ```go
 func NewDevContainer() *DevContainer
@@ -57,7 +83,7 @@ func NewDevContainer() *DevContainer
 NewDevContainer creates and returns a pointer to a new instance of a DevContainer. It initializes the DevContainer and prepares it for further configuration.
 
 <a name="DevContainer.AddExtension"></a>
-### func \(\*DevContainer\) [AddExtension](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L262>)
+### func \(\*DevContainer\) [AddExtension](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L303>)
 
 ```go
 func (d *DevContainer) AddExtension(extension string)
@@ -66,7 +92,7 @@ func (d *DevContainer) AddExtension(extension string)
 
 
 <a name="DevContainer.AddFeature"></a>
-### func \(\*DevContainer\) [AddFeature](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L254>)
+### func \(\*DevContainer\) [AddFeature](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L296>)
 
 ```go
 func (d *DevContainer) AddFeature(key string, value map[string]interface{})
@@ -75,7 +101,7 @@ func (d *DevContainer) AddFeature(key string, value map[string]interface{})
 
 
 <a name="DevContainer.AddSetting"></a>
-### func \(\*DevContainer\) [AddSetting](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L270>)
+### func \(\*DevContainer\) [AddSetting](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L310>)
 
 ```go
 func (d *DevContainer) AddSetting(key string, value interface{})
@@ -84,103 +110,115 @@ func (d *DevContainer) AddSetting(key string, value interface{})
 
 
 <a name="DevContainer.Initialize"></a>
-### func \(\*DevContainer\) [Initialize](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L50>)
+### func \(\*DevContainer\) [Initialize](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L49>)
 
 ```go
-func (d *DevContainer) Initialize() *DevContainer
+func (d *DevContainer) Initialize(typ string) (*DevContainer, error)
 ```
 
 
 
-<a name="DevContainer.SetBuild"></a>
-### func \(\*DevContainer\) [SetBuild](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L167>)
+<a name="DevContainer.SetBuildContext"></a>
+### func \(\*DevContainer\) [SetBuildContext](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L184>)
 
 ```go
-func (d *DevContainer) SetBuild()
+func (d *DevContainer) SetBuildContext(path string) error
 ```
 
-SetBuild sets the Dockerfile field within the build struct of the DevContainer. If the build field is not initialized, the method has no effect
+
+
+<a name="DevContainer.SetBuildDockerfile"></a>
+### func \(\*DevContainer\) [SetBuildDockerfile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L167>)
+
+```go
+func (d *DevContainer) SetBuildDockerfile(file string) error
+```
+
+
 
 <a name="DevContainer.SetDockerComposeFile"></a>
-### func \(\*DevContainer\) [SetDockerComposeFile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L182>)
+### func \(\*DevContainer\) [SetDockerComposeFile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L201>)
 
 ```go
-func (d *DevContainer) SetDockerComposeFile()
+func (d *DevContainer) SetDockerComposeFile(file string) error
 ```
 
 
 
 <a name="DevContainer.SetExtensions"></a>
-### func \(\*DevContainer\) [SetExtensions](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L234>)
+### func \(\*DevContainer\) [SetExtensions](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L273>)
 
 ```go
 func (d *DevContainer) SetExtensions(extensions []string) error
 ```
 
-SetExtensions sets the Extensions field of the DevContainer with the provided slice. If the Extensions field is not initialized, it returns an error indicating the field must be initialized first.
+
 
 <a name="DevContainer.SetFeatures"></a>
-### func \(\*DevContainer\) [SetFeatures](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L223>)
+### func \(\*DevContainer\) [SetFeatures](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L262>)
 
 ```go
-func (d *DevContainer) SetFeatures(features map[string]map[string]interface{}) error
+func (d *DevContainer) SetFeatures(features map[string]interface{}) error
 ```
 
-SetFeatures sets the Features field of the DevContainer with the provided map. If the Features field is not initialized, it returns an error indicating the field must be initialized first.
+
 
 <a name="DevContainer.SetImage"></a>
-### func \(\*DevContainer\) [SetImage](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L155>)
+### func \(\*DevContainer\) [SetImage](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L150>)
 
 ```go
-func (d *DevContainer) SetImage()
+func (d *DevContainer) SetImage(image string) error
 ```
 
 
 
 <a name="DevContainer.SetName"></a>
-### func \(\*DevContainer\) [SetName](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L150>)
+### func \(\*DevContainer\) [SetName](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L137>)
 
 ```go
-func (d *DevContainer) SetName()
+func (d *DevContainer) SetName(name string) error
 ```
 
-SetName sets the Name field of the DevContainer. If the provided name is an empty string, it defaults to "MyDevContainer"
+
 
 <a name="DevContainer.SetService"></a>
-### func \(\*DevContainer\) [SetService](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L192>)
+### func \(\*DevContainer\) [SetService](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L218>)
 
 ```go
-func (d *DevContainer) SetService()
+func (d *DevContainer) SetService(svcName string) error
 ```
 
 
 
 <a name="DevContainer.SetSettings"></a>
-### func \(\*DevContainer\) [SetSettings](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L245>)
+### func \(\*DevContainer\) [SetSettings](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L284>)
 
 ```go
 func (d *DevContainer) SetSettings(settings map[string]interface{}) error
 ```
 
-SetSettings sets the Settings field of the DevContainer with the provided map. If the Settings field is not initialized, it returns an error indicating the field must be initialized first.
+
 
 <a name="DevContainer.SetShutdownAction"></a>
-### func \(\*DevContainer\) [SetShutdownAction](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L203>)
+### func \(\*DevContainer\) [SetShutdownAction](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L235>)
 
 ```go
-func (d *DevContainer) SetShutdownAction()
-```
-
-SetShutdownAction sets the ShutdownAction field of the DevContainer.
-
-<a name="DevContainer.SetType"></a>
-### func \(\*DevContainer\) [SetType](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L141>)
-
-```go
-func (d *DevContainer) SetType()
+func (d *DevContainer) SetShutdownAction(action string) error
 ```
 
 
+
+<a name="VSCode"></a>
+## type [VSCode](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L38-L41>)
+
+VSCode struct provides configuration options for Visual Studio Code inside the development container. It includes settings for extensions to be installed and custom settings to be applied. These fields are optional
+
+```go
+type VSCode struct {
+    Extensions []string               `json:"extensions,omitempty"`
+    Settings   map[string]interface{} `json:"settings,omitempty"`
+}
+```
 
 Generated by [gomarkdoc](<https://github.com/princjef/gomarkdoc>)
 

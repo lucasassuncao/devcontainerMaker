@@ -5,6 +5,10 @@ import (
 	"github.com/pterm/pterm"
 )
 
+func RunBasicText(text string) {
+	pterm.DefaultBasicText.Println(pterm.LightBlue(text))
+}
+
 func RunInteractiveTextInput(text, defaultValue string) (string, error) {
 	printer := pterm.DefaultInteractiveTextInput.
 		WithDefaultText(pterm.FgGreen.Sprint(text)).

@@ -1,6 +1,6 @@
 package config
 
-var Settings = map[string]interface{}{
+var DefaultSettings = map[string]interface{}{
 	"editor.formatOnSave":                      true,
 	"files.autoSave":                           "afterDelay",
 	"terminal.integrated.defaultProfile.linux": "bash",
