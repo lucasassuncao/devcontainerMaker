@@ -7,41 +7,38 @@ import (
 	"devcontainerMaker/internal/service"
 	"devcontainerMaker/internal/utils"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/pterm/pterm"
 )
 
+var v = validator.New()
+
 func main() {
-	dc := model.NewDevContainer().
-		WithName().
-		WithBuildDockerFile().
-		WithShutdownAction().
-		WithFeatures().
-		WithExtensions().
-		WithSettings()
+	dc := model.NewDevContainer().Initialize()
 
-	devContainerName, _ := pterm.DefaultInteractiveTextInput.WithDefaultText(pterm.FgGreen.Sprint("Enter your Dev Container name")).Show()
-
-	dc.SetName(devContainerName)
-	dc.SetBuildDockerfile("Dockerfile")
-	dc.SetShutdownAction("stopContainer")
+	err := v.Struct(dc)
+	if err != nil {
+		pterm.Error.Print(err.Error())
+		return
+	}
 
 	// EXTENSIONS SECTION
 	utils.ClearScreen()
-	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Extensions..."))
+	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Extensions..."))
 	selectedExtensions := service.GetMultiselectOptionsFromMap(config.Extensions, service.RunInteractiveMultiselect)
 	var se []string
 	for _, s := range selectedExtensions {
 		se = append(se, s)
 	}
-	err := dc.SetExtensions(se)
+	err = dc.SetExtensions(se)
 	if err != nil {
 		pterm.Fatal.Println(err.Error())
 	}
 
 	// SETTINGS SECTION
 	utils.ClearScreen()
-	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's VSCode Settings..."))
+	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Settings..."))
 	selectedSettings := service.GetMultiselectOptionsFromMap(config.Settings, service.RunInteractiveMultiselect)
 	err = dc.SetSettings(selectedSettings)
 	if err != nil {

@@ -5,6 +5,23 @@ import (
 	"github.com/pterm/pterm"
 )
 
+func RunInteractiveTextInput(text, defaultValue string) (string, error) {
+	printer := pterm.DefaultInteractiveTextInput.
+		WithDefaultText(pterm.FgGreen.Sprint(text)).
+		WithDefaultValue(defaultValue)
+
+	return printer.Show()
+}
+
+func RunInteractiveSelect(opts []string, text string) (string, error) {
+	printer := pterm.DefaultInteractiveSelect.
+		WithOptions(opts).
+		WithDefaultText(text).
+		WithMaxHeight(10)
+
+	return printer.Show()
+}
+
 // RunInteractiveMultiselect creates and displays an interactive multiselect menu using the pterm library.
 // It allows the user to navigate through the provided options and select one or more items.
 func RunInteractiveMultiselect(opts []string) ([]string, error) {

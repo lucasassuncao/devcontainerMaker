@@ -1,34 +1,42 @@
 package model
 
-import "errors"
+import (
+	"devcontainerMaker/internal/service"
+	"errors"
+	"fmt"
+)
 
 // DevContainer struct represents a configuration for a development container,
 // which can include build settings, shutdown actions, feature configurations, and customizations.
 // Some fields are optional and will be omitted from the JSON representation if not set, allowing flexibility in the configuration
 type DevContainer struct {
-	Name           string                            `json:"name"`
-	Build          *Build                            `json:"build,omitempty"`
-	ShutdownAction string                            `json:"shutdownAction,omitempty"`
-	Features       map[string]map[string]interface{} `json:"features,omitempty"`
-	Customizations *Customizations                   `json:"customizations,omitempty"`
+	Name              string                            `json:"name" validate:"required"`
+	Type              string                            `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
+	Image             string                            `json:"image,omitempty"`
+	Build             *build                            `json:"build,omitempty"`
+	DockerComposeFile string                            `json:"dockerComposeFile,omitempty"`
+	Service           string                            `json:"service,omitempty"`
+	ShutdownAction    string                            `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
+	Features          map[string]map[string]interface{} `json:"features,omitempty"`
+	Customizations    *customizations                   `json:"customizations,omitempty"`
 }
 
-// Build struct encapsulates the build-related configuration for a development container.
-// In this case, it contains the path to the Dockerfile,
+// build struct encapsulates the build-related configuration for a development container,
 // allowing the user to define the specifics of how the container should be built. This field is optional
-type Build struct {
-	Dockerfile string `json:"dockerfile,omitempty"`
+type build struct {
+	Dockerfile string `json:"dockerfile"`
+	Context    string `json:"context"`
 }
 
-// Customizations struct allows users to define container-specific customizations, such as VSCode settings or extensions.
-// It currently supports VSCode-related configurations, but additional customizations could be added in the future.
-type Customizations struct {
-	VSCode *VSCode `json:"vscode,omitempty"`
+// customizations struct allows users to define container-specific customizations, such as vscode settings or extensions.
+// It currently supports vscode-related configurations, but additional customizations could be added in the future.
+type customizations struct {
+	VSCode *vscode `json:"vscode,omitempty"`
 }
 
-// VSCode struct provides configuration options for Visual Studio Code inside the development container.
+// vscode struct provides configuration options for Visual Studio Code inside the development container.
 // It includes settings for extensions to be installed and custom settings to be applied. These fields are optional
-type VSCode struct {
+type vscode struct {
 	Extensions []string               `json:"extensions,omitempty"`
 	Settings   map[string]interface{} `json:"settings,omitempty"`
 }
@@ -39,80 +47,175 @@ func NewDevContainer() *DevContainer {
 	return &DevContainer{}
 }
 
-// WithName initializes the DevContainer's Name field with an empty string.
-// Subsequent configuration is possible by using the method SetName.
-func (d *DevContainer) WithName() *DevContainer {
-	d.Name = ""
+func (d *DevContainer) Initialize() *DevContainer {
+	d.withName()
+	d.withType()
+	d.withShutdownAction()
+	d.withFeatures()
+	d.withExtensions()
+	d.withSettings()
+
 	return d
 }
 
-// WithBuildDockerFile initializes the DevContainer's Build -> Dockerfile field with an empty string
-// Subsequent configuration is possible by using the method SetBuildDockerfile.
-func (d *DevContainer) WithBuildDockerFile() *DevContainer {
-	d.Build = &Build{
-		Dockerfile: "",
+// withName initializes the DevContainer's Name field with an empty string.
+// Subsequent configuration is possible by using the method SetName.
+func (d *DevContainer) withName() *DevContainer {
+	d.SetName()
+	return d
+}
+
+func (d *DevContainer) withType() *DevContainer {
+	d.SetType()
+
+	switch d.Type {
+	case "image":
+		d.withImage()
+	case "dockerfile":
+		d.withBuild()
+	case "dockercompose":
+		d.withDockerCompose()
+		d.withService()
 	}
+	return d
+}
+
+func (d *DevContainer) withImage() *DevContainer {
+	d.SetImage()
+	return d
+}
+
+// WithBuild initializes the DevContainer's build -> Dockerfile field with an empty string
+// Subsequent configuration is possible by using the method SetBuild.
+func (d *DevContainer) withBuild() *DevContainer {
+	d.SetBuild()
+	return d
+}
+
+func (d *DevContainer) withDockerCompose() *DevContainer {
+	d.SetDockerComposeFile()
+	return d
+}
+
+func (d *DevContainer) withService() *DevContainer {
+	d.SetService()
 	return d
 }
 
 // WithShutdownAction initializes the DevContainer's ShutdownAction field with an empty string
 // Subsequent configuration is possible by using the method SetShutdownAction.
-func (d *DevContainer) WithShutdownAction() *DevContainer {
-	d.ShutdownAction = ""
+func (d *DevContainer) withShutdownAction() *DevContainer {
+	d.SetShutdownAction()
 	return d
 }
 
 // WithFeatures initializes the DevContainer's Feature field with an empty map[string]map[string]interface{}
 // Subsequent configuration is possible by using the method SetFeatures.
-func (d *DevContainer) WithFeatures() *DevContainer {
+func (d *DevContainer) withFeatures() *DevContainer {
 	d.Features = make(map[string]map[string]interface{})
 	return d
 }
 
-// WithExtensions initializes the DevContainer's Customizations -> VSCode -> Extensions field with an empty []string
+// WithExtensions initializes the DevContainer's customizations -> vscode -> Extensions field with an empty []string
 // Subsequent configuration is possible by using the method SetExtensions.
-func (d *DevContainer) WithExtensions() *DevContainer {
-	d.Customizations = &Customizations{
-		VSCode: &VSCode{
+func (d *DevContainer) withExtensions() *DevContainer {
+	d.Customizations = &customizations{
+		VSCode: &vscode{
 			Extensions: make([]string, 0),
 		},
 	}
 	return d
 }
 
-// WithSettings initializes the DevContainer's Customizations -> VSCode -> Settings field with an empty map[string]interface{}
+// WithSettings initializes the DevContainer's customizations -> vscode -> Settings field with an empty map[string]interface{}
 // Subsequent configuration is possible by using the method SetSettings.
-func (d *DevContainer) WithSettings() *DevContainer {
-	d.Customizations = &Customizations{
-		VSCode: &VSCode{
+func (d *DevContainer) withSettings() *DevContainer {
+	d.Customizations = &customizations{
+		VSCode: &vscode{
 			Settings: make(map[string]interface{}),
 		},
 	}
 	return d
 }
 
+func (d *DevContainer) SetType() {
+	opts := []string{"image", "dockerfile", "dockercompose"}
+	typ, _ := service.RunInteractiveSelect(opts, "Select your Dev Container type")
+
+	d.Type = typ
+}
+
 // SetName sets the Name field of the DevContainer.
 // If the provided name is an empty string, it defaults to "MyDevContainer"
-func (d *DevContainer) SetName(name string) {
-	if name == "" {
-		d.Name = "MyDevContainer"
-		return
-	}
-
+func (d *DevContainer) SetName() {
+	name, _ := service.RunInteractiveTextInput("Enter your Dev Container name", "")
 	d.Name = name
 }
 
-// SetBuildDockerfile sets the Dockerfile field within the Build struct of the DevContainer.
-// If the Build field is not initialized, the method has no effect
-func (d *DevContainer) SetBuildDockerfile(dockerfile string) {
-	if d.Build != nil {
-		d.Build.Dockerfile = dockerfile
+func (d *DevContainer) SetImage() {
+	if d.Type != "image" {
+		fmt.Printf("WARNING: Dev Container is set to use a '%s' not Image", d.Type)
+		return
+	}
+
+	image, _ := service.RunInteractiveTextInput("Enter the Docker image to use", "")
+	d.Image = image
+}
+
+// SetBuild sets the Dockerfile field within the build struct of the DevContainer.
+// If the build field is not initialized, the method has no effect
+func (d *DevContainer) SetBuild() {
+	if d.Type != "dockerfile" {
+		fmt.Printf("WARNING: Dev Container is set to use a '%s' not Dockerfile", d.Type)
+		return
+	}
+
+	file, _ := service.RunInteractiveTextInput("Please enter the name of your Dockerfile", "Dockerfile")
+	context, _ := service.RunInteractiveTextInput("Enter the path where the Docker build should be executed from (default is the current directory)", ".")
+
+	d.Build = &build{
+		Dockerfile: file,
+		Context:    context,
 	}
 }
 
+func (d *DevContainer) SetDockerComposeFile() {
+	if d.Type != "dockercompose" {
+		fmt.Printf("WARNING: Dev Container is set to use a '%s' not DockerCompose", d.Type)
+		return
+	}
+
+	compose, _ := service.RunInteractiveTextInput("Enter the Docker Compose file name", "")
+	d.DockerComposeFile = compose
+}
+
+func (d *DevContainer) SetService() {
+	if d.Type != "dockercompose" {
+		fmt.Printf("WARNING: Dev Container is set to use a '%s' not DockerCompose", d.Type)
+		return
+	}
+
+	svc, _ := service.RunInteractiveTextInput("Enter the service name", "")
+	d.Service = svc
+}
+
 // SetShutdownAction sets the ShutdownAction field of the DevContainer.
-func (d *DevContainer) SetShutdownAction(shutdownAction string) {
-	d.ShutdownAction = shutdownAction
+func (d *DevContainer) SetShutdownAction() {
+	var opts []string
+
+	switch d.Type {
+	case "image":
+		opts = []string{"none", "stopContainer"}
+	case "dockerfile":
+		opts = []string{"none", "stopContainer"}
+	case "dockercompose":
+		opts = []string{"none", "stopCompose"}
+
+	}
+
+	sa, _ := service.RunInteractiveSelect(opts, "Select your Dev Container shutdown action")
+
+	d.ShutdownAction = sa
 }
 
 // SetFeatures sets the Features field of the DevContainer with the provided map.
