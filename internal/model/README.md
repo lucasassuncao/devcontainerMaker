@@ -32,7 +32,7 @@ import "devcontainerMaker/internal/model"
 
 
 <a name="Build"></a>
-## type [Build](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L25-L28>)
+## type [Build](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L26-L29>)
 
 Build struct encapsulates the Build\-related configuration for a development container, allowing the user to define the specifics of how the container should be built. This field is optional
 
@@ -44,7 +44,7 @@ type Build struct {
 ```
 
 <a name="Customizations"></a>
-## type [Customizations](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L32-L34>)
+## type [Customizations](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L33-L35>)
 
 Customizations struct allows users to define container\-specific Customizations, such as VSCode settings or extensions. It currently supports VSCode\-related configurations, but additional Customizations could be added in the future.
 
@@ -55,7 +55,7 @@ type Customizations struct {
 ```
 
 <a name="DevContainer"></a>
-## type [DevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L11-L21>)
+## type [DevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L12-L22>)
 
 DevContainer struct represents a configuration for a development container, which can include Build settings, shutdown actions, feature configurations, and Customizations. Some fields are optional and will be omitted from the JSON representation if not set, allowing flexibility in the configuration
 
@@ -74,7 +74,7 @@ type DevContainer struct {
 ```
 
 <a name="NewDevContainer"></a>
-### func [NewDevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L45>)
+### func [NewDevContainer](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L46>)
 
 ```go
 func NewDevContainer() *DevContainer
@@ -83,7 +83,7 @@ func NewDevContainer() *DevContainer
 NewDevContainer creates and returns a pointer to a new instance of a DevContainer. It initializes the DevContainer and prepares it for further configuration.
 
 <a name="DevContainer.AddExtension"></a>
-### func \(\*DevContainer\) [AddExtension](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L303>)
+### func \(\*DevContainer\) [AddExtension](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L305>)
 
 ```go
 func (d *DevContainer) AddExtension(extension string)
@@ -92,7 +92,7 @@ func (d *DevContainer) AddExtension(extension string)
 
 
 <a name="DevContainer.AddFeature"></a>
-### func \(\*DevContainer\) [AddFeature](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L296>)
+### func \(\*DevContainer\) [AddFeature](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L298>)
 
 ```go
 func (d *DevContainer) AddFeature(key string, value map[string]interface{})
@@ -101,7 +101,7 @@ func (d *DevContainer) AddFeature(key string, value map[string]interface{})
 
 
 <a name="DevContainer.AddSetting"></a>
-### func \(\*DevContainer\) [AddSetting](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L310>)
+### func \(\*DevContainer\) [AddSetting](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L312>)
 
 ```go
 func (d *DevContainer) AddSetting(key string, value interface{})
@@ -110,16 +110,16 @@ func (d *DevContainer) AddSetting(key string, value interface{})
 
 
 <a name="DevContainer.Initialize"></a>
-### func \(\*DevContainer\) [Initialize](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L49>)
+### func \(\*DevContainer\) [Initialize](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L51>)
 
 ```go
 func (d *DevContainer) Initialize(typ string) (*DevContainer, error)
 ```
 
-
+Initialize \-
 
 <a name="DevContainer.SetBuildContext"></a>
-### func \(\*DevContainer\) [SetBuildContext](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L184>)
+### func \(\*DevContainer\) [SetBuildContext](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L186>)
 
 ```go
 func (d *DevContainer) SetBuildContext(path string) error
@@ -128,7 +128,7 @@ func (d *DevContainer) SetBuildContext(path string) error
 
 
 <a name="DevContainer.SetBuildDockerfile"></a>
-### func \(\*DevContainer\) [SetBuildDockerfile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L167>)
+### func \(\*DevContainer\) [SetBuildDockerfile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L169>)
 
 ```go
 func (d *DevContainer) SetBuildDockerfile(file string) error
@@ -137,7 +137,7 @@ func (d *DevContainer) SetBuildDockerfile(file string) error
 
 
 <a name="DevContainer.SetDockerComposeFile"></a>
-### func \(\*DevContainer\) [SetDockerComposeFile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L201>)
+### func \(\*DevContainer\) [SetDockerComposeFile](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L203>)
 
 ```go
 func (d *DevContainer) SetDockerComposeFile(file string) error
@@ -146,7 +146,7 @@ func (d *DevContainer) SetDockerComposeFile(file string) error
 
 
 <a name="DevContainer.SetExtensions"></a>
-### func \(\*DevContainer\) [SetExtensions](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L273>)
+### func \(\*DevContainer\) [SetExtensions](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L275>)
 
 ```go
 func (d *DevContainer) SetExtensions(extensions []string) error
@@ -155,7 +155,7 @@ func (d *DevContainer) SetExtensions(extensions []string) error
 
 
 <a name="DevContainer.SetFeatures"></a>
-### func \(\*DevContainer\) [SetFeatures](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L262>)
+### func \(\*DevContainer\) [SetFeatures](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L264>)
 
 ```go
 func (d *DevContainer) SetFeatures(features map[string]interface{}) error
@@ -164,7 +164,7 @@ func (d *DevContainer) SetFeatures(features map[string]interface{}) error
 
 
 <a name="DevContainer.SetImage"></a>
-### func \(\*DevContainer\) [SetImage](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L150>)
+### func \(\*DevContainer\) [SetImage](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L152>)
 
 ```go
 func (d *DevContainer) SetImage(image string) error
@@ -173,7 +173,7 @@ func (d *DevContainer) SetImage(image string) error
 
 
 <a name="DevContainer.SetName"></a>
-### func \(\*DevContainer\) [SetName](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L137>)
+### func \(\*DevContainer\) [SetName](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L139>)
 
 ```go
 func (d *DevContainer) SetName(name string) error
@@ -182,7 +182,7 @@ func (d *DevContainer) SetName(name string) error
 
 
 <a name="DevContainer.SetService"></a>
-### func \(\*DevContainer\) [SetService](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L218>)
+### func \(\*DevContainer\) [SetService](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L220>)
 
 ```go
 func (d *DevContainer) SetService(svcName string) error
@@ -191,7 +191,7 @@ func (d *DevContainer) SetService(svcName string) error
 
 
 <a name="DevContainer.SetSettings"></a>
-### func \(\*DevContainer\) [SetSettings](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L284>)
+### func \(\*DevContainer\) [SetSettings](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L286>)
 
 ```go
 func (d *DevContainer) SetSettings(settings map[string]interface{}) error
@@ -200,7 +200,7 @@ func (d *DevContainer) SetSettings(settings map[string]interface{}) error
 
 
 <a name="DevContainer.SetShutdownAction"></a>
-### func \(\*DevContainer\) [SetShutdownAction](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L235>)
+### func \(\*DevContainer\) [SetShutdownAction](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L237>)
 
 ```go
 func (d *DevContainer) SetShutdownAction(action string) error
@@ -209,7 +209,7 @@ func (d *DevContainer) SetShutdownAction(action string) error
 
 
 <a name="VSCode"></a>
-## type [VSCode](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L38-L41>)
+## type [VSCode](<https://github.com/lucasassuncao/devcontainerMaker/blob/main/internal/model/devcontainer.go#L39-L42>)
 
 VSCode struct provides configuration options for Visual Studio Code inside the development container. It includes settings for extensions to be installed and custom settings to be applied. These fields are optional
 
