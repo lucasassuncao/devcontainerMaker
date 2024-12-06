@@ -12,12 +12,12 @@ type DevContainer struct {
 	Name              string                            `json:"name" validate:"required"`
 	Type              string                            `json:"-" validate:"required,oneof=image dockerfile dockercompose"`
 	Image             string                            `json:"image,omitempty"`
-	Build             *Build                            `json:"Build,omitempty"`
+	Build             *Build                            `json:"build,omitempty"`
 	DockerComposeFile string                            `json:"dockerComposeFile,omitempty"`
 	Service           string                            `json:"service,omitempty"`
 	ShutdownAction    string                            `json:"shutdownAction,omitempty" validate:"oneof=none stopContainer stopCompose"`
 	Features          map[string]map[string]interface{} `json:"features,omitempty"`
-	Customizations    *Customizations                   `json:"Customizations,omitempty"`
+	Customizations    *Customizations                   `json:"customizations,omitempty"`
 }
 
 // Build struct encapsulates the Build-related configuration for a development container,
@@ -30,7 +30,7 @@ type Build struct {
 // Customizations struct allows users to define container-specific Customizations, such as VSCode settings or extensions.
 // It currently supports VSCode-related configurations, but additional Customizations could be added in the future.
 type Customizations struct {
-	VSCode *VSCode `json:"VSCode,omitempty"`
+	VSCode *VSCode `json:"vscode,omitempty"`
 }
 
 // VSCode struct provides configuration options for Visual Studio Code inside the development container.
