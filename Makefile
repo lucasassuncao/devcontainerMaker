@@ -8,6 +8,9 @@ run:
 install:
 	go build
 
+fmt:
+	go fmt ./...
+
 test:
 	go test -v ./...
 

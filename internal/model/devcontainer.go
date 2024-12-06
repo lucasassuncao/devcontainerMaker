@@ -2,7 +2,6 @@ package model
 
 import (
 	"devcontainerMaker/internal/service"
-	"errors"
 	"fmt"
 )
 
@@ -47,7 +46,24 @@ func NewDevContainer() *DevContainer {
 	return &DevContainer{}
 }
 
-func (d *DevContainer) Initialize() *DevContainer {
+func (d *DevContainer) Initialize(typ string) (*DevContainer, error) {
+	var opts = []string{"image", "dockerfile", "dockercompose"}
+
+	// Prompt for type if not provided
+	if typ == "" {
+		var err error
+		typ, err = service.RunInteractiveSelect(opts, "Select your DevContainer type")
+		if err != nil {
+			return nil, fmt.Errorf("error during initialization: %w", err)
+		}
+	}
+	d.Type = typ
+
+	if err := validateOptions(d.Type, opts); err != nil {
+		return nil, fmt.Errorf("error: %w", err)
+	}
+
+	// Initialize the DevContainer fields
 	d.withName()
 	d.withType()
 	d.withShutdownAction()
@@ -55,19 +71,14 @@ func (d *DevContainer) Initialize() *DevContainer {
 	d.withExtensions()
 	d.withSettings()
 
-	return d
+	return d, nil
 }
 
-// withName initializes the DevContainer's Name field with an empty string.
-// Subsequent configuration is possible by using the method SetName.
 func (d *DevContainer) withName() *DevContainer {
-	d.SetName()
+	d.Name = ""
 	return d
 }
-
 func (d *DevContainer) withType() *DevContainer {
-	d.SetType()
-
 	switch d.Type {
 	case "image":
 		d.withImage()
@@ -79,45 +90,33 @@ func (d *DevContainer) withType() *DevContainer {
 	}
 	return d
 }
-
 func (d *DevContainer) withImage() *DevContainer {
-	d.SetImage()
+	d.Image = ""
 	return d
 }
-
-// WithBuild initializes the DevContainer's build -> Dockerfile field with an empty string
-// Subsequent configuration is possible by using the method SetBuild.
 func (d *DevContainer) withBuild() *DevContainer {
-	d.SetBuild()
+	d.Build = &build{
+		Dockerfile: "",
+		Context:    "",
+	}
 	return d
 }
-
 func (d *DevContainer) withDockerCompose() *DevContainer {
-	d.SetDockerComposeFile()
+	d.DockerComposeFile = ""
 	return d
 }
-
 func (d *DevContainer) withService() *DevContainer {
-	d.SetService()
+	d.Service = ""
 	return d
 }
-
-// WithShutdownAction initializes the DevContainer's ShutdownAction field with an empty string
-// Subsequent configuration is possible by using the method SetShutdownAction.
 func (d *DevContainer) withShutdownAction() *DevContainer {
-	d.SetShutdownAction()
+	d.ShutdownAction = ""
 	return d
 }
-
-// WithFeatures initializes the DevContainer's Feature field with an empty map[string]map[string]interface{}
-// Subsequent configuration is possible by using the method SetFeatures.
 func (d *DevContainer) withFeatures() *DevContainer {
 	d.Features = make(map[string]map[string]interface{})
 	return d
 }
-
-// WithExtensions initializes the DevContainer's customizations -> vscode -> Extensions field with an empty []string
-// Subsequent configuration is possible by using the method SetExtensions.
 func (d *DevContainer) withExtensions() *DevContainer {
 	d.Customizations = &customizations{
 		VSCode: &vscode{
@@ -126,9 +125,6 @@ func (d *DevContainer) withExtensions() *DevContainer {
 	}
 	return d
 }
-
-// WithSettings initializes the DevContainer's customizations -> vscode -> Settings field with an empty map[string]interface{}
-// Subsequent configuration is possible by using the method SetSettings.
 func (d *DevContainer) withSettings() *DevContainer {
 	d.Customizations = &customizations{
 		VSCode: &vscode{
@@ -138,117 +134,163 @@ func (d *DevContainer) withSettings() *DevContainer {
 	return d
 }
 
-func (d *DevContainer) SetType() {
-	opts := []string{"image", "dockerfile", "dockercompose"}
-	typ, _ := service.RunInteractiveSelect(opts, "Select your Dev Container type")
+func (d *DevContainer) SetName(name string) error {
+	if name == "" {
+		name, err := service.RunInteractiveTextInput("Enter your DevContainer name", "")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer name: %v", err)
+		}
+		d.Name = name
+		return nil
+	}
 
-	d.Type = typ
-}
-
-// SetName sets the Name field of the DevContainer.
-// If the provided name is an empty string, it defaults to "MyDevContainer"
-func (d *DevContainer) SetName() {
-	name, _ := service.RunInteractiveTextInput("Enter your Dev Container name", "")
 	d.Name = name
+	return nil
 }
-
-func (d *DevContainer) SetImage() {
+func (d *DevContainer) SetImage(image string) error {
 	if d.Type != "image" {
-		fmt.Printf("WARNING: Dev Container is set to use a '%s' not Image", d.Type)
-		return
+		return fmt.Errorf("WARNING: DevContainer is set to '%s' not 'image'", d.Type)
 	}
 
-	image, _ := service.RunInteractiveTextInput("Enter the Docker image to use", "")
+	if image == "" {
+		image, err := service.RunInteractiveTextInput("Enter the Docker image to use", "")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer image: %v", err)
+		}
+		d.Image = image
+		return nil
+	}
+
 	d.Image = image
+	return nil
 }
-
-// SetBuild sets the Dockerfile field within the build struct of the DevContainer.
-// If the build field is not initialized, the method has no effect
-func (d *DevContainer) SetBuild() {
+func (d *DevContainer) SetBuildDockerfile(file string) error {
 	if d.Type != "dockerfile" {
-		fmt.Printf("WARNING: Dev Container is set to use a '%s' not Dockerfile", d.Type)
-		return
+		return fmt.Errorf("WARNING: DevContainer is set to '%s' not 'Dockerfile'", d.Type)
 	}
 
-	file, _ := service.RunInteractiveTextInput("Please enter the name of your Dockerfile", "Dockerfile")
-	context, _ := service.RunInteractiveTextInput("Enter the path where the Docker build should be executed from (default is the current directory)", ".")
-
-	d.Build = &build{
-		Dockerfile: file,
-		Context:    context,
+	if file == "" {
+		file, err := service.RunInteractiveTextInput("Please enter the name of your Dockerfile", "Dockerfile")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer Dockerfile: %v", err)
+		}
+		d.Build.Dockerfile = file
+		return nil
 	}
+
+	d.Build.Dockerfile = file
+	return nil
 }
+func (d *DevContainer) SetBuildContext(path string) error {
+	if d.Type != "dockerfile" {
+		return fmt.Errorf("WARNING: DevContainer is set to '%s' not 'dockerfile'", d.Type)
+	}
 
-func (d *DevContainer) SetDockerComposeFile() {
+	if path == "" {
+		path, err := service.RunInteractiveTextInput("Enter the path where the Docker build should be executed from (default is the current directory)", ".")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer Build Context: %v", err)
+		}
+		d.Build.Context = path
+		return nil
+	}
+
+	d.Build.Context = path
+	return nil
+}
+func (d *DevContainer) SetDockerComposeFile(file string) error {
 	if d.Type != "dockercompose" {
-		fmt.Printf("WARNING: Dev Container is set to use a '%s' not DockerCompose", d.Type)
-		return
+		return fmt.Errorf("WARNING: DevContainer is set to '%s' not 'dockercompose'", d.Type)
 	}
 
-	compose, _ := service.RunInteractiveTextInput("Enter the Docker Compose file name", "")
-	d.DockerComposeFile = compose
-}
+	if file == "" {
+		file, err := service.RunInteractiveTextInput("Enter the Docker Compose file name", "")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer DockerComposeFile: %v", err)
+		}
+		d.DockerComposeFile = file
+		return nil
+	}
 
-func (d *DevContainer) SetService() {
+	d.DockerComposeFile = file
+	return nil
+}
+func (d *DevContainer) SetService(svcName string) error {
 	if d.Type != "dockercompose" {
-		fmt.Printf("WARNING: Dev Container is set to use a '%s' not DockerCompose", d.Type)
-		return
+		return fmt.Errorf("WARNING: DevContainer is set to '%s' not 'dockercompose'", d.Type)
 	}
 
-	svc, _ := service.RunInteractiveTextInput("Enter the service name", "")
-	d.Service = svc
-}
+	if svcName == "" {
+		svcName, err := service.RunInteractiveTextInput("Enter the service name", "")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer Service: %v", err)
+		}
+		d.Service = svcName
+		return nil
+	}
 
-// SetShutdownAction sets the ShutdownAction field of the DevContainer.
-func (d *DevContainer) SetShutdownAction() {
+	d.Service = svcName
+	return nil
+}
+func (d *DevContainer) SetShutdownAction(action string) error {
 	var opts []string
 
 	switch d.Type {
-	case "image":
-		opts = []string{"none", "stopContainer"}
-	case "dockerfile":
+	case "image", "dockerfile":
 		opts = []string{"none", "stopContainer"}
 	case "dockercompose":
 		opts = []string{"none", "stopCompose"}
-
 	}
 
-	sa, _ := service.RunInteractiveSelect(opts, "Select your Dev Container shutdown action")
+	if action == "" {
+		action, err := service.RunInteractiveSelect(opts, "Select your DevContainer shutdown action")
+		if err != nil {
+			return fmt.Errorf("could not set DevContainer ShutdownAction: %v", err)
+		}
+		d.ShutdownAction = action
+		return nil
+	}
 
-	d.ShutdownAction = sa
+	if err := validateOptions(action, opts); err != nil {
+		return fmt.Errorf("error: %w", err)
+	}
+
+	d.ShutdownAction = action
+	return nil
 }
 
-// SetFeatures sets the Features field of the DevContainer with the provided map.
-// If the Features field is not initialized, it returns an error indicating the field must be initialized first.
 func (d *DevContainer) SetFeatures(features map[string]map[string]interface{}) error {
+	if len(features) == 0 {
+		return fmt.Errorf("no features selected... skipping feature set")
+	}
+
 	if d.Features != nil {
 		d.Features = features
-		return nil
 	}
 
-	return errors.New("feature field not initialized")
+	return nil
 }
-
-// SetExtensions sets the Extensions field of the DevContainer with the provided slice.
-// If the Extensions field is not initialized, it returns an error indicating the field must be initialized first.
 func (d *DevContainer) SetExtensions(extensions []string) error {
+	if len(extensions) == 0 {
+		return fmt.Errorf("no extensions selected... skipping extension set")
+	}
+
 	if d.Customizations.VSCode != nil {
 		d.Customizations.VSCode.Extensions = extensions
-		return nil
 	}
 
-	return errors.New("extension field not initialized")
+	return nil
 }
-
-// SetSettings sets the Settings field of the DevContainer with the provided map.
-// If the Settings field is not initialized, it returns an error indicating the field must be initialized first.
 func (d *DevContainer) SetSettings(settings map[string]interface{}) error {
+	if len(settings) == 0 {
+		return fmt.Errorf("no settings selected... skipping settings set")
+	}
+
 	if d.Customizations.VSCode != nil {
 		d.Customizations.VSCode.Settings = settings
-		return nil
 	}
 
-	return errors.New("setting field not initialized")
+	return nil
 }
 
 func (d *DevContainer) AddFeature(key string, value map[string]interface{}) {
@@ -258,7 +300,6 @@ func (d *DevContainer) AddFeature(key string, value map[string]interface{}) {
 
 	d.Features[key] = value
 }
-
 func (d *DevContainer) AddExtension(extension string) {
 	if d.Customizations.VSCode.Extensions == nil {
 		d.Customizations.VSCode.Extensions = []string{}
@@ -266,11 +307,19 @@ func (d *DevContainer) AddExtension(extension string) {
 
 	d.Customizations.VSCode.Extensions = append(d.Customizations.VSCode.Extensions, extension)
 }
-
 func (d *DevContainer) AddSetting(key string, value interface{}) {
 	if d.Customizations.VSCode.Settings == nil {
 		d.Customizations.VSCode.Settings = make(map[string]interface{})
 	}
 
 	d.Customizations.VSCode.Settings[key] = value
+}
+
+func validateOptions(s string, validOptions []string) error {
+	for _, validOption := range validOptions {
+		if s == validOption {
+			return nil
+		}
+	}
+	return fmt.Errorf("invalid DevContainer type: %s. Valid types are: %v", s, validOptions)
 }

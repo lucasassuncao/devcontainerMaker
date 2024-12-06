@@ -8,23 +8,58 @@ import (
 	"devcontainerMaker/internal/utils"
 	"fmt"
 	"github.com/go-playground/validator/v10"
-
 	"github.com/pterm/pterm"
 )
 
 var v = validator.New()
 
 func main() {
-	dc := model.NewDevContainer().Initialize()
-
-	err := v.Struct(dc)
+	dc, err := model.NewDevContainer().Initialize("")
 	if err != nil {
-		pterm.Error.Print(err.Error())
+		fmt.Println(err.Error())
 		return
 	}
 
+	err = dc.SetName("")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	switch dc.Type {
+	case "image":
+		err = dc.SetImage("")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	case "dockerfile":
+		err = dc.SetBuildDockerfile("")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		err = dc.SetBuildContext("")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	case "dockercompose":
+		err = dc.SetDockerComposeFile("")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		err = dc.SetService("")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}
+
+	err = dc.SetShutdownAction("")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
 	// EXTENSIONS SECTION
-	utils.ClearScreen()
+	//utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Extensions..."))
 	selectedExtensions := service.GetMultiselectOptionsFromMap(config.Extensions, service.RunInteractiveMultiselect)
 	var se []string
@@ -33,25 +68,31 @@ func main() {
 	}
 	err = dc.SetExtensions(se)
 	if err != nil {
-		pterm.Fatal.Println(err.Error())
+		fmt.Println(err.Error())
 	}
 
 	// SETTINGS SECTION
-	utils.ClearScreen()
+	//utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Settings..."))
 	selectedSettings := service.GetMultiselectOptionsFromMap(config.Settings, service.RunInteractiveMultiselect)
 	err = dc.SetSettings(selectedSettings)
 	if err != nil {
-		pterm.Fatal.Println(err.Error())
+		fmt.Println(err.Error())
 	}
 
 	// FEATURES SECTION
-	utils.ClearScreen()
+	//utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's Features..."))
 	selectedFeatures := service.GetMultiselectOptionsFromMap(config.Features, service.RunInteractiveMultiselect)
 	err = dc.SetFeatures(selectedFeatures)
 	if err != nil {
-		pterm.Fatal.Println(err.Error())
+		fmt.Println(err.Error())
+	}
+
+	err = v.Struct(dc)
+	if err != nil {
+		pterm.Error.Print(err.Error())
+		return
 	}
 
 	d, err := utils.PrettifyDevContainerJSON(dc)
@@ -65,6 +106,6 @@ func main() {
 		_ = fmt.Errorf("failed to create devcontainer.json file %v", err.Error())
 	}
 
-	utils.ClearScreen()
+	//utils.ClearScreen()
 	fmt.Println("Your Dev Container is ready c:")
 }
