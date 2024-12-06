@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// EXTENSIONS SECTION
-	//utils.ClearScreen()
+	// utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Extensions..."))
 	selectedExtensions := service.GetMultiselectOptionsFromMap(config.DefaultExtensions, service.RunInteractiveMultiselect)
 	var se []string
@@ -73,7 +73,7 @@ func main() {
 	}
 
 	// SETTINGS SECTION
-	//utils.ClearScreen()
+	// utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue())
 	selectedSettings := service.GetMultiselectOptionsFromMap(config.DefaultSettings, service.RunInteractiveMultiselect)
 	err = dc.SetSettings(selectedSettings)
@@ -82,7 +82,7 @@ func main() {
 	}
 
 	// FEATURES SECTION
-	//utils.ClearScreen()
+	// utils.ClearScreen()
 	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's Features..."))
 	selectedFeatures := service.GetMultiselectOptionsFromMap(config.DefaultFeatures, service.RunInteractiveMultiselect)
 	err = dc.SetFeatures(selectedFeatures)
@@ -110,6 +110,6 @@ func main() {
 		_ = fmt.Errorf("failed to create devcontainer.json file %v", err.Error())
 	}
 
-	//utils.ClearScreen()
+	// utils.ClearScreen()
 	fmt.Println("Your Dev Container is ready c:")
 }

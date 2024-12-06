@@ -11,10 +11,10 @@ func TestPrettifyDevContainerJSON(t *testing.T) {
 	t.Run("Success to Prettify JSON", func(t *testing.T) {
 		dc, _ := model.NewDevContainer().Initialize("dockerfile")
 
-		dc.SetName("TestDevContainer")
-		dc.SetBuildDockerfile("Dockerfile")
-		dc.SetBuildContext(".")
-		dc.SetShutdownAction("none")
+		_ = dc.SetName("TestDevContainer")
+		_ = dc.SetBuildDockerfile("Dockerfile")
+		_ = dc.SetBuildContext(".")
+		_ = dc.SetShutdownAction("none")
 
 		_, err := PrettifyDevContainerJSON(dc)
 		if err != nil {
