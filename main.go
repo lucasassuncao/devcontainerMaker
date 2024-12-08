@@ -15,7 +15,7 @@ import (
 var v = validator.New()
 
 func main() {
-	dc, err := model.NewDevContainer().Initialize("dockerfile")
+	dc, err := model.NewDevContainer().Initialize("")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -74,7 +74,7 @@ func main() {
 
 	// SETTINGS SECTION
 	// utils.ClearScreen()
-	pterm.DefaultBasicText.Println(pterm.LightBlue())
+	pterm.DefaultBasicText.Println(pterm.LightBlue("Configuring Devcontainer's vscode Settings..."))
 	selectedSettings := service.GetMultiselectOptionsFromMap(config.DefaultSettings, service.RunInteractiveMultiselect)
 	err = dc.SetSettings(selectedSettings)
 	if err != nil {
