@@ -13,7 +13,7 @@ import (
 var settingKey string
 var settingValue string
 
-var addSettingCmd = &cobra.Command{
+var addSettingsCmd = &cobra.Command{
 	Use:   "add-settings",
 	Short: "Add a VSCode setting to the DevContainer",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -51,9 +51,9 @@ var addSettingCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(addSettingCmd)
-	addSettingCmd.Flags().StringVarP(&settingKey, "key", "k", "", "Setting key (required)")
-	addSettingCmd.Flags().StringVarP(&settingValue, "value", "v", "", "Setting value (required)")
-	addSettingCmd.MarkFlagRequired("key")
-	addSettingCmd.MarkFlagRequired("value")
+	rootCmd.AddCommand(addSettingsCmd)
+	addSettingsCmd.Flags().StringVarP(&settingKey, "key", "k", "", "Setting key (required)")
+	addSettingsCmd.Flags().StringVarP(&settingValue, "value", "v", "", "Setting value (required)")
+	addSettingsCmd.MarkFlagRequired("key")
+	addSettingsCmd.MarkFlagRequired("value")
 }

@@ -13,7 +13,7 @@ import (
 var featureKey string
 var featureValues []string
 
-var addFeatureCmd = &cobra.Command{
+var addFeaturesCmd = &cobra.Command{
 	Use:   "add-features",
 	Short: "Add a feature to the DevContainer",
 	Long: `Add a feature to the DevContainer. 
@@ -58,9 +58,9 @@ You can provide multiple key-value pairs for the feature using the --value flag.
 }
 
 func init() {
-	rootCmd.AddCommand(addFeatureCmd)
-	addFeatureCmd.Flags().StringVarP(&featureKey, "key", "k", "", "Feature key (required)")
-	addFeatureCmd.Flags().StringArrayVarP(&featureValues, "value", "v", []string{}, "Feature values in JSON format (e.g., '{\"enabled\":true}') (required)")
-	addFeatureCmd.MarkFlagRequired("key")
-	addFeatureCmd.MarkFlagRequired("value")
+	rootCmd.AddCommand(addFeaturesCmd)
+	addFeaturesCmd.Flags().StringVarP(&featureKey, "key", "k", "", "Feature key (required)")
+	addFeaturesCmd.Flags().StringArrayVarP(&featureValues, "value", "v", []string{}, "Feature values in JSON format (e.g., '{\"enabled\":true}') (required)")
+	addFeaturesCmd.MarkFlagRequired("key")
+	addFeaturesCmd.MarkFlagRequired("value")
 }

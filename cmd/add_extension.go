@@ -11,7 +11,7 @@ import (
 
 var extension string
 
-var addExtensionCmd = &cobra.Command{
+var addExtensionsCmd = &cobra.Command{
 	Use:   "add-extensions",
 	Short: "Add a VSCode extension to the DevContainer",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -41,7 +41,7 @@ var addExtensionCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(addExtensionCmd)
-	addExtensionCmd.Flags().StringVarP(&extension, "extension", "e", "", "Extension ID (required)")
-	addExtensionCmd.MarkFlagRequired("extension")
+	rootCmd.AddCommand(addExtensionsCmd)
+	addExtensionsCmd.Flags().StringVarP(&extension, "extension", "e", "", "Extension ID (required)")
+	addExtensionsCmd.MarkFlagRequired("extension")
 }
