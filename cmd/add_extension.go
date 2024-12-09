@@ -43,5 +43,5 @@ var addExtensionsCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(addExtensionsCmd)
 	addExtensionsCmd.Flags().StringVarP(&extension, "extension", "e", "", "Extension ID (required)")
-	addExtensionsCmd.MarkFlagRequired("extension")
+	_ = addExtensionsCmd.MarkFlagRequired("extension")
 }

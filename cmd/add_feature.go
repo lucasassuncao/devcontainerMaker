@@ -61,6 +61,6 @@ func init() {
 	rootCmd.AddCommand(addFeaturesCmd)
 	addFeaturesCmd.Flags().StringVarP(&featureKey, "key", "k", "", "Feature key (required)")
 	addFeaturesCmd.Flags().StringArrayVarP(&featureValues, "value", "v", []string{}, "Feature values in JSON format (e.g., '{\"enabled\":true}') (required)")
-	addFeaturesCmd.MarkFlagRequired("key")
-	addFeaturesCmd.MarkFlagRequired("value")
+	_ = addFeaturesCmd.MarkFlagRequired("key")
+	_ = addFeaturesCmd.MarkFlagRequired("value")
 }

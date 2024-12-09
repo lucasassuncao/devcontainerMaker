@@ -54,6 +54,6 @@ func init() {
 	rootCmd.AddCommand(addSettingsCmd)
 	addSettingsCmd.Flags().StringVarP(&settingKey, "key", "k", "", "Setting key (required)")
 	addSettingsCmd.Flags().StringVarP(&settingValue, "value", "v", "", "Setting value (required)")
-	addSettingsCmd.MarkFlagRequired("key")
-	addSettingsCmd.MarkFlagRequired("value")
+	_ = addSettingsCmd.MarkFlagRequired("key")
+	_ = addSettingsCmd.MarkFlagRequired("value")
 }
