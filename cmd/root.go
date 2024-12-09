@@ -9,7 +9,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "devcontainer",
 	Short: "Manage DevContainer configurations",
-	Long:  "A CLI to add features, extensions, and settings to a DevContainer configuration.",
+	Long:  "A CLI to create DevContainer configuration files",
 }
 
 func Execute() {
